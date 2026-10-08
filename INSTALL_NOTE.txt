@@ -1,0 +1,1 @@
+No package-lock.json is included because dependency installation could not be executed in the build sandbox. Run `npm install` locally or in GitHub Actions to generate a lockfile; the GitHub workflow intentionally uses npm install.
