@@ -1,6 +1,6 @@
 {
   "name": "pokemon-team-lab",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "private": true,
   "description": "GitHub-ready 6v6 Pokemon team matchup lab powered by @smogon/calc.",
   "scripts": {

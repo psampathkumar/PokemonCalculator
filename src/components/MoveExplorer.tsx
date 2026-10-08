@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { calculateMove } from "../lib/calc";
 import { getMoveLibrary } from "../lib/moves";
 import { FieldState, PokemonSet } from "../lib/types";
@@ -13,10 +13,13 @@ export default function MoveExplorer({ attacker, defender, field }: { attacker: 
 
   const filtered = library.filter(name => name.toLowerCase().includes(query.toLowerCase())).slice(0, 80);
 
-  const calculateSelected = () => {
-    if (!move) return;
+  useEffect(() => {
+    if (!move) {
+      setResult(null);
+      return;
+    }
     setResult(calculateMove(attacker, defender, move, field));
-  };
+  }, [attacker, defender, move, field]);
 
   return (
     <section className="panel explorer-panel">
@@ -33,12 +36,12 @@ export default function MoveExplorer({ attacker, defender, field }: { attacker: 
           <option value="">Choose a move</option>
           {filtered.map(name => <option key={name}>{name}</option>)}
         </select>
-        <button className="primary" onClick={calculateSelected}>Calculate</button>
+        <button className="primary" onClick={() => setResult(move ? calculateMove(attacker, defender, move, field) : null)}>Recalculate</button>
       </div>
       {result && (
         <div className="explorer-result">
           <strong>{result.move}</strong>
-          <span>{result.min}–{result.max} HP · {result.minPct.toFixed(1)}–{result.maxPct.toFixed(1)}% · {result.ko}</span>
+          <span>{result.min}–{result.max} HP · {result.minPct.toFixed(1)}–{result.maxPct.toFixed(1)}% after hazards · {result.ko}</span>
           <code>{result.description}</code>
         </div>
       )}

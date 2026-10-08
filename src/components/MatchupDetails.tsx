@@ -25,8 +25,14 @@ export default function MatchupDetails({ matchup }: { matchup: Matchup | null })
             <div className="bar"><i style={{ width: `${Math.min(move.maxPct, 100)}%` }} /></div>
             <div className="damage-values">
               <span>{move.min}–{move.max} HP</span>
-              <span>{move.minPct.toFixed(1)}–{move.maxPct.toFixed(1)}%</span>
+              <span>{move.minPct.toFixed(1)}–{move.maxPct.toFixed(1)}% after hazards</span>
             </div>
+            <small className="muted">
+              Raw HP percentage: {move.rawMinPct.toFixed(1)}–{move.rawMaxPct.toFixed(1)}%.
+              {move.entryHazardDamage > 0
+                ? ` Entry hazards: -${move.entryHazardDamage} HP (${move.entryHazardPct.toFixed(1)}%). Effective HP: ${move.effectiveHp}.`
+                : " No entry-hazard damage."}
+            </small>
             <code>{move.description}</code>
           </article>
         )) : <p>No valid damaging moves were found on the current set.</p>}

@@ -13,7 +13,7 @@ export default function FieldPanel({ value, onChange }: Props) {
       <div className="panel-title-row">
         <div>
           <h2>Battle field</h2>
-          <p>These conditions feed directly into the damage calculations.</p>
+          <p>Changes recalculate the matrix immediately. Entry hazards are applied to the defending Pokémon before the move.</p>
         </div>
       </div>
       <div className="field-grid">
@@ -37,6 +37,11 @@ export default function FieldPanel({ value, onChange }: Props) {
           </select>
         </label>
         <label>Attacker Stealth Rock <input type="checkbox" checked={value.attackerStealthRock} onChange={e => set("attackerStealthRock", e.target.checked)} /></label>
+        <label>Attacker Spikes
+          <select value={value.attackerSpikes} onChange={e => set("attackerSpikes", Number(e.target.value))}>
+            <option value={0}>0</option><option value={1}>1</option><option value={2}>2</option><option value={3}>3</option>
+          </select>
+        </label>
       </div>
     </section>
   );

@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useDeferredValue, useMemo, useState } from "react";
 import { sampleTeamA, sampleTeamB } from "../lib/sample-data";
 import { calculateMove } from "../lib/calc";
 import { exportTeam } from "../lib/team-parser";
@@ -32,18 +32,19 @@ export default function TeamLab() {
   const [rightSelected, setRightSelected] = useState(0);
   const [field, setField] = useState<FieldState>(DEFAULT_FIELD);
   const [selected, setSelected] = useState({ row: 0, col: 0 });
+  const deferredField = useDeferredValue(field);
 
   const matchups = useMemo<(Matchup | null)[][]>(() => {
     return left.map(attacker => right.map(defender => {
       const moves = attacker.moves
         .filter(Boolean)
-        .map(move => calculateMove(attacker, defender, move, field))
+        .map(move => calculateMove(attacker, defender, move, deferredField))
         .filter((value): value is NonNullable<typeof value> => Boolean(value))
         .sort((a, b) => b.maxPct - a.maxPct);
 
       return { attacker, defender, moves, best: moves[0] };
     }));
-  }, [left, right, field]);
+  }, [left, right, deferredField]);
 
   const selectedMatchup = matchups[selected.row]?.[selected.col] || null;
 

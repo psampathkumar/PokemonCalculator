@@ -1,26 +1,33 @@
 # Pokemon Team Lab
 
-A GitHub-ready 6v6 Pokemon matchup workspace built with Next.js, React, TypeScript, and the official Smogon `@smogon/calc` package.
+A GitHub-ready Next.js static web app for 6v6 Pokémon matchup analysis using `@smogon/calc`.
 
-## What works in this initial model
+-- 6v6 vs 6v6 team workspace
+-- Showdown-style team paste import
+-- Showdown-style team export
+-- 6x6 matchup matrix
+-- Click any matchup to inspect every move on the attacking set
+-- Damage ranges and percentage ranges from `@smogon/calc`
+-- Nature / EV / IV / item / ability / level / Tera support in the set model
+-- Field controls for weather, terrain, Stealth Rock, Spikes, Reflect, Light Screen, Aurora Veil
+-- Move explorer that attempts to enumerate the current Smogon calc data; it falls back to a curated starter catalog if the installed data layer does not expose enumeration
+-- Basic threat/answer summary
+-- Fully client-side/static architecture
+-- GitHub Pages deployment workflow
 
-- 6v6 vs 6v6 team workspace
-- Showdown-style team paste import
-- Showdown-style team export
-- 6x6 matchup matrix
-- Click any matchup to inspect every move on the attacking set
-- Damage ranges and percentage ranges from `@smogon/calc`
-- Nature / EV / IV / item / ability / level / Tera support in the set model
-- Field controls for weather, terrain, Stealth Rock, Spikes, Reflect, Light Screen, Aurora Veil
-- Move explorer that attempts to enumerate the current Smogon calc data; it falls back to a curated starter catalog if the installed data layer does not expose enumeration
-- Basic threat/answer summary
-- Fully client-side/static architecture
-- GitHub Pages deployment workflow
 
-## Requirements
+## What is fixed in v0.2.0
 
-- Node.js 20+ recommended
-- npm
+- Corrected all React client-component directives.
+- Narrowed Tera types before passing them to `@smogon/calc`, avoiding GitHub's strict TypeScript error.
+- Added type-safe handling around the current calculator API.
+- Added a calculation cache so repeated matchup calculations are reused.
+- Added deferred rendering for the 36-cell matchup matrix so field controls stay responsive.
+- Stealth Rock and Spikes now affect the displayed KO percentage through entry-hazard HP loss.
+- Raw move damage percentage is still shown separately.
+- Heavy-Duty Boots and Magic Guard prevent the modeled entry-hazard damage.
+- Spikes only apply to grounded targets.
+- Move Explorer now automatically recalculates when its selected move, field, attacker, or defender changes.
 
 ## Run locally
 
@@ -29,59 +36,32 @@ npm install
 npm run dev
 ```
 
-Open http://localhost:3000.
+Open the local URL printed by Next.js.
 
-## Production build
+For a production/static build:
 
 ```bash
 npm run build
 ```
 
-The static site is emitted to `out/`.
+The static output is written to `out/`.
 
 ## GitHub Pages
 
-The included workflow at `.github/workflows/deploy.yml` builds and deploys the static `out/` directory to GitHub Pages.
-
-The workflow automatically sets:
+This repository includes:
 
 ```text
-NEXT_PUBLIC_BASE_PATH=/<repository-name>
+.github/workflows/deploy.yml
 ```
 
-So a repository named `pokemon-team-lab` will work at:
+Push the repository to GitHub, then in:
 
-```text
-https://<username>.github.io/pokemon-team-lab/
-```
+**Settings → Pages → Build and deployment → Source → GitHub Actions**
 
-In the repository settings, enable GitHub Pages with **GitHub Actions** as the source.
+The workflow installs dependencies, builds the static site, and deploys `out/`.
 
-## Vercel
+## Important calculator behavior
 
-This project is also compatible with Vercel. For Vercel, no base path is needed; just import the repository and deploy.
+`@smogon/calc` calculates the damage of a move against the supplied field state. Entry hazards are represented as side state in the calculator, but their switch-in HP loss is not itself returned as the move's `damage` array. This app therefore calculates the Gen 9 singles entry-hazard HP loss separately and uses the remaining HP for its hazard-adjusted KO percentage.
 
-## Important architecture note
-
-The app deliberately does not bundle `pokemon-showdown` just to parse teams. The Showdown export format is small enough to parse locally, and keeping the initial client bundle focused makes this easier to host as a static site.
-
-For future battle/replay integration, use Showdown's documented protocol rather than DOM scraping.
-
-## Data / attribution
-
-The calculator is powered by `@smogon/calc`, the package maintained in the Smogon `damage-calc` repository.
-
-Showdown-style team import/export follows the public Pokemon Showdown team format.
-
-This project is an independent interface and is not affiliated with or endorsed by Smogon or Pokemon Showdown.
-
-## Next planned layers
-
-1. Set legality and format selection
-2. Complete species/move/item editors
-3. Usage-stat priors
-4. Speed-tier analysis
-5. Threat ranking and overloaded-answer detection
-6. Opponent-set inference from observed battle information
-7. Replay import
-8. Optional live battle protocol integration
+The current model is intentionally an initial 6v6 singles lab. It does not yet simulate an entire battle turn-by-turn.

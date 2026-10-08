@@ -35,6 +35,11 @@ export type DamageSummary = {
   max: number;
   minPct: number;
   maxPct: number;
+  rawMinPct: number;
+  rawMaxPct: number;
+  effectiveHp: number;
+  entryHazardDamage: number;
+  entryHazardPct: number;
   ko: string;
   description: string;
 };
